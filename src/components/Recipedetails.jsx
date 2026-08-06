@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, Loader, Utensils } from "lucide-react";
+import { ChevronLeft, Loader, Utensils, BookOpen } from "lucide-react";
 import { useFetch, API_URL } from "./useFetch";
 
 const Recipedetails = () => {
@@ -39,6 +39,7 @@ const Recipedetails = () => {
     );
   }
 
+  // Extract ingredients
   const ingredients = [];
 
   for (let i = 1; i <= 20; i++) {
@@ -52,6 +53,14 @@ const Recipedetails = () => {
       });
     }
   }
+
+  // Split instructions into steps
+  const instructions = meal.strInstructions
+    ? meal.strInstructions
+        .split(".")
+        .map((step) => step.trim())
+        .filter((step) => step.length > 0)
+    : [];
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -112,14 +121,35 @@ const Recipedetails = () => {
                 {meal.strCategory}
               </span>
 
-              <span className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md">
+              <span className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
                 {meal.strArea}
               </span>
             </div>
-
-          
           </div>
         </div>
+      </div>
+
+      {/* Instructions */}
+      <div className="mt-14 pt-8 border-t border-gray-800">
+        <h2 className="text-2xl font-bold text-gray-100 mb-8 flex items-center">
+          <BookOpen className="w-7 h-7 mr-3 text-blue-500" />
+          Detailed Preparation
+        </h2>
+
+        <ol className="space-y-6 list-none text-gray-300">
+          {instructions.map((step, index) => (
+            <li
+              key={index}
+              className="text-lg leading-relaxed bg-gray-800 p-5 rounded-xl border-l-4 border-blue-500 shadow-lg shadow-black/30 transition duration-300 hover:bg-gray-700/50"
+            >
+              <span className="font-extrabold text-yellow-400 mr-3 text-xl">
+                {index + 1}.
+              </span>
+
+              {step}
+            </li>
+          ))}
+        </ol>
       </div>
     </main>
   );
